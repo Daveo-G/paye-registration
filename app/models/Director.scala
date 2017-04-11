@@ -20,32 +20,14 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 case class Director(
-                     name: Name,
+                     name: String,
                      nino: Option[String]
                    )
-
-case class Name(
-                 forename: Option[String],
-                 otherForenames: Option[String],
-                 surname: Option[String],
-                 title: Option[String]
-               )
-
-object Name {
-  implicit val format: Format[Name] =
-    (
-      (__ \ "forename").formatNullable[String] and
-        (__ \ "other_forenames").formatNullable[String] and
-        (__ \ "surname").formatNullable[String] and
-        (__ \ "title").formatNullable[String]
-      )(Name.apply, unlift(Name.unapply)
-    )
-}
 
 object Director extends DirectorValidator {
   implicit val format: Format[Director] =
     (
-      (__ \ "director").format[Name] and
+      (__ \ "director" \ "name").format[String] and
         (__ \ "nino").formatNullable[String](ninoValidator)
       )(Director.apply, unlift(Director.unapply)
     )

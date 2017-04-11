@@ -59,21 +59,11 @@ class RegistrationMongoRepositoryISpec
   private val regNoDirectors = PAYERegistration(registrationID = "AC123456", transactionID = "NN1234", internalID = "09876", acknowledgementReference = Some("testAckRef"), registrationConfirmation = Some(EmpRefNotification(Some("testEmpRef"), "2017-01-01T12:00:00Z", "testStatus")), formCreationTimestamp = "timestamp", eligibility = Some(Eligibility(false, false)), status = PAYEStatus.draft, completionCapacity = None, companyDetails = Some(companyDetails), directors = Seq.empty, payeContact = None, None, sicCodes = Seq.empty)
   private val directors: Seq[Director] = Seq(
     Director(
-      Name(
-        forename = Some("Thierry"),
-        otherForenames = Some("Dominique"),
-        surname = Some("Henry"),
-        title = Some("Sir")
-      ),
+      name = "Thierry Henry",
       Some("SR123456C")
     ),
     Director(
-      Name(
-        forename = Some("David"),
-        otherForenames = Some("Jesus"),
-        surname = Some("Trezeguet"),
-        title = Some("Mr")
-      ),
+      name = "David Trezeguet",
       Some("SR000009C")
     )
   )

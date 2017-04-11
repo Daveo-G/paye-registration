@@ -21,40 +21,6 @@ import play.api.libs.json.{JsPath, JsSuccess, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class DirectorSpec extends UnitSpec with JsonFormatValidation {
-  "Name" should {
-    val tstJson = Json.parse(
-      s"""{
-         |  "forename":"Thierry",
-         |  "other_forenames":"Dominique",
-         |  "surname":"Henry",
-         |  "title":"Sir"
-         |}""".stripMargin)
-
-    val tstModel = Name(
-      forename = Some("Thierry"),
-      otherForenames = Some("Dominique"),
-      surname = Some("Henry"),
-      title = Some("Sir")
-    )
-
-    "read from json with full data" in {
-      Json.fromJson[Name](tstJson) shouldBe JsSuccess(tstModel)
-    }
-
-    "write to json with full data" in {
-      Json.toJson[Name](tstModel) shouldBe tstJson
-    }
-
-    val tstEmptyJson = Json.parse(s"""{}""".stripMargin)
-    val tstEmptyModel = Name(None, None, None, None)
-    "read from json with empty data" in {
-      Json.fromJson[Name](tstEmptyJson) shouldBe JsSuccess(tstEmptyModel)
-    }
-
-    "write to json with empty data" in {
-      Json.toJson[Name](tstEmptyModel) shouldBe tstEmptyJson
-    }
-  }
 
   "Director" should {
     val tstJson = Json.parse(
@@ -62,20 +28,12 @@ class DirectorSpec extends UnitSpec with JsonFormatValidation {
          |{
          |  "nino":"SR098765C",
          |  "director": {
-         |    "forename":"Thierry",
-         |    "other_forenames":"Dominique",
-         |    "surname":"Henry",
-         |    "title":"Sir"
+         |    "name":"Thierry Henry"
          |  }
          |}
       """.stripMargin)
 
-    val tstName = Name(
-      forename = Some("Thierry"),
-      otherForenames = Some("Dominique"),
-      surname = Some("Henry"),
-      title = Some("Sir")
-    )
+    val tstName = "Thierry Henry"
 
     val tstModel = Director(tstName, Some("SR098765C"))
 
@@ -87,8 +45,8 @@ class DirectorSpec extends UnitSpec with JsonFormatValidation {
       Json.toJson[Director](tstModel) shouldBe tstJson
     }
 
-    val tstEmptyJson = Json.parse(s"""{"director":{}}""".stripMargin)
-    val tstEmptyModel = Director(Name(None, None, None, None), None)
+    val tstEmptyJson = Json.parse(s"""{"director":{"name":""}}""".stripMargin)
+    val tstEmptyModel = Director("", None)
     "read from json with empty data" in {
       Json.fromJson[Director](tstEmptyJson) shouldBe JsSuccess(tstEmptyModel)
     }
@@ -103,10 +61,7 @@ class DirectorSpec extends UnitSpec with JsonFormatValidation {
            |{
            |  "nino":"$nino",
            |  "director": {
-           |    "forename":"Thierry",
-           |    "other_forenames":"Dominique",
-           |    "surname":"Henry",
-           |    "title":"Sir"
+           |    "name":"Thierry Henry"
            |  }
            |}
       """.stripMargin)

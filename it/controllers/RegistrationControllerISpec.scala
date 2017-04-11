@@ -97,12 +97,7 @@ class RegistrationControllerISpec extends IntegrationSpecBase {
     ),
     Seq(
       Director(
-        Name(
-          forename = Some("Thierry"),
-          otherForenames = Some("Dominique"),
-          surname = Some("Henry"),
-          title = Some("Sir")
-        ),
+        name = "Thierry Henry",
         Some("SR123456C")
       )
     ),

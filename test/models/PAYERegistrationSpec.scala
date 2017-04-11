@@ -78,19 +78,13 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
            |    {
            |      "nino":"SR123456C",
            |      "director": {
-           |        "forename":"Thierry",
-           |        "other_forenames":"Dominique",
-           |        "surname":"Henry",
-           |        "title":"Sir"
+           |        "name":"Thierry Henry"
            |      }
            |    },
            |    {
            |      "nino":"SR000009C",
            |      "director": {
-           |        "forename":"David",
-           |        "other_forenames":"Jesus",
-           |        "surname":"Trezeguet",
-           |        "title":"Mr"
+           |        "name":"David Trezeguet"
            |      }
            |    }
            |  ],
@@ -158,21 +152,11 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
         ),
         directors = Seq(
           Director(
-            Name(
-              forename = Some("Thierry"),
-              otherForenames = Some("Dominique"),
-              surname = Some("Henry"),
-              title = Some("Sir")
-            ),
+            name = "Thierry Henry",
             Some("SR123456C")
           ),
           Director(
-            Name(
-              forename = Some("David"),
-              otherForenames = Some("Jesus"),
-              surname = Some("Trezeguet"),
-              title = Some("Mr")
-            ),
+            name = "David Trezeguet",
             Some("SR000009C")
           )
         ),

@@ -16,14 +16,11 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import common.exceptions.DBExceptions.MissingRegDocument
 import fixtures.{AuthFixture, RegistrationFixture}
 import helpers.PAYERegSpec
-import models.incorporation.{IncorpStatusUpdate, IncorpStatusUpdate$}
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

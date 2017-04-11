@@ -39,20 +39,14 @@ object DESCompanyDetails {
       )(unlift(DESCompanyDetails.unapply))
 }
 
-case class DESDirector(forename: Option[String],
-                        surname: Option[String],
-                        otherForenames: Option[String],
-                        title: Option[String],
-                        nino: Option[String]
+case class DESDirector(name: String,
+                       nino: Option[String]
 )
 
 object DESDirector {
   implicit val writes: Writes[DESDirector] =
     (
-      (__ \ "forename").writeNullable[String] and
-        (__ \ "surname").writeNullable[String] and
-        (__ \ "other-forenames").writeNullable[String] and
-        (__ \ "title").writeNullable[String] and
+      (__ \ "name").write[String] and
         (__ \ "nino").writeNullable[String]
       )(unlift(DESDirector.unapply))
 }

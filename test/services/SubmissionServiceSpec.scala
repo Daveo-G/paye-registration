@@ -23,11 +23,10 @@ import common.exceptions.RegistrationExceptions._
 import common.exceptions.SubmissionExceptions._
 import connectors.DESConnector
 import enums.PAYEStatus
-import fixtures.RegistrationFixture
-import models._
 import models.submission._
 import helpers.PAYERegSpec
-import models.incorporation.{IncorpStatusUpdate, IncorpStatusUpdate$}
+import models._
+import models.incorporation.IncorpStatusUpdate
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
@@ -100,38 +99,22 @@ class SubmissionServiceSpec extends PAYERegSpec {
 
   val validDirectors = Seq(
     Director(
-      Name(
-        forename = Some("Thierry"),
-        otherForenames = Some("Dominique"),
-        surname = Some("Henry"),
-        title = Some("Sir")
-      ),
+      name = "Thierry Henry",
       Some("SR123456C")
     ),
     Director(
-      Name(
-        forename = Some("David"),
-        otherForenames = Some("Jesus"),
-        surname = Some("Trezeguet"),
-        title = Some("Mr")
-      ),
+      "David Trezeguet",
       Some("SR000009C")
     )
   )
 
   val validDESDirectors = Seq(
     DESDirector(
-      forename = Some("Thierry"),
-      otherForenames = Some("Dominique"),
-      surname = Some("Henry"),
-      title = Some("Sir"),
+      name = "Thierry Henry",
       nino = Some("SR123456C")
     ),
     DESDirector(
-      forename = Some("David"),
-      otherForenames = Some("Jesus"),
-      surname = Some("Trezeguet"),
-      title = Some("Mr"),
+      name = "David Trezeguet",
       nino = Some("SR000009C")
     )
   )

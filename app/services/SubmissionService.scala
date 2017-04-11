@@ -153,10 +153,7 @@ trait SubmissionSrv {
   private def buildDESDirectors(directors: Seq[Director]): Seq[DESDirector] = {
     directors.map(dir => {
       DESDirector(
-        forename = dir.name.forename,
-        surname = dir.name.surname,
-        otherForenames = dir.name.otherForenames,
-        title = dir.name.title,
+        name = dir.name,
         nino = dir.nino
       )
     })

@@ -63,21 +63,11 @@ class DirectorsISpec extends IntegrationSpecBase {
 
     val validDirectors = Seq(
       Director(
-        Name(
-          forename = Some("Thierry"),
-          otherForenames = Some("Dominique"),
-          surname = Some("Henry"),
-          title = Some("Sir")
-        ),
+        name = "Thierry Henry",
         Some("SR123456C")
       ),
       Director(
-        Name(
-          forename = Some("David"),
-          otherForenames = Some("Jesus"),
-          surname = Some("Trezeguet"),
-          title = Some("Mr")
-        ),
+        name = "David Trezeguet",
         Some("SR000009C")
       )
     )

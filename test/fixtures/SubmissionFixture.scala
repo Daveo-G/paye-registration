@@ -46,17 +46,11 @@ trait SubmissionFixture {
 
   val validDESDirectors = Seq(
     DESDirector(
-      forename = Some("Thierry"),
-      otherForenames = Some("Dominique"),
-      surname = Some("Henry"),
-      title = Some("Sir"),
+      name = "Thierry Henry",
       nino = Some("SR123456C")
     ),
     DESDirector(
-      forename = Some("David"),
-      otherForenames = Some("Jesus"),
-      surname = Some("Trezeguet"),
-      title = Some("Mr"),
+      name = "David Trezeguet",
       nino = Some("SR000009C")
     )
   )
