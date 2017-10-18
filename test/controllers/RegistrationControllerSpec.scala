@@ -38,9 +38,9 @@ import play.api.mvc.Results.{Ok, BadRequest}
 import play.api.http.Status.{OK, BAD_REQUEST}
 import repositories.RegistrationMongoRepository
 import services._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class RegistrationControllerSpec extends PAYERegSpec with AuthFixture with RegistrationFixture {
 

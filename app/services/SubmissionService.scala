@@ -31,12 +31,12 @@ import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Request}
 import repositories._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 import scala.util.control.NoStackTrace
+import uk.gov.hmrc.http.HeaderCarrier
 
 class RejectedIncorporationException(msg: String) extends NoStackTrace {
   override def getMessage: String = msg

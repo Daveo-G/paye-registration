@@ -27,10 +27,10 @@ import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import common.exceptions.DBExceptions.MissingRegDocument
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class RegistrationService @Inject()(injRegistrationMongoRepository: RegistrationMongo,

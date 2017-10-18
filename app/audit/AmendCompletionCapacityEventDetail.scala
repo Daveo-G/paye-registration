@@ -19,7 +19,7 @@ package audit
 import models.submission.DESCompletionCapacity
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 
 case class AmendCompletionCapacityEventDetail(externalUserId: String,
                                               authProviderId: String,

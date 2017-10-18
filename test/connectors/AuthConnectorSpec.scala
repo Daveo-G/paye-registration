@@ -23,10 +23,11 @@ import org.mockito.{ArgumentMatchers, Matchers}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, _}
-import uk.gov.hmrc.play.http.logging.SessionId
+import uk.gov.hmrc.play.http._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class AuthConnectorSpec extends PAYERegSpec with BeforeAndAfter {
 

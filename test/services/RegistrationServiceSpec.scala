@@ -25,10 +25,10 @@ import models._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.Mockito._
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.SessionId
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
 class RegistrationServiceSpec extends PAYERegSpec with RegistrationFixture {
   val mockAuditService = mock[AuditService]

@@ -22,11 +22,11 @@ import models.external.BusinessProfile
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.{ForbiddenException, HeaderCarrier, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.http.ws.WSHttp
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ ForbiddenException, HeaderCarrier, HttpResponse, NotFoundException }
 
 class CompanyRegistrationConnectorSpec extends PAYERegSpec with WSHTTPMock {
 

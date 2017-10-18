@@ -22,9 +22,9 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Writes
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpReads}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads }
 
 trait WSHTTPMock {
   this: MockitoSugar =>

@@ -26,9 +26,9 @@ import play.api.test.Helpers.{ACCEPTED, INTERNAL_SERVER_ERROR, OK}
 import uk.gov.hmrc.play.http.ws.WSHttp
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class IncorporationInformationConnectorSpec extends PAYERegSpec {
 

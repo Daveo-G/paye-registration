@@ -39,10 +39,10 @@ import reactivemongo.bson.BSONObjectID
 import services.MetricsService
 import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class RegistrationMongo @Inject()(injMetrics: MetricsService, injDateHelper: DateHelper, mongo: ReactiveMongoComponent, config: Configuration) extends ReactiveMongoFormats {

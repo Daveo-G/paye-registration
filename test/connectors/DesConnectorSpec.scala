@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.http._
 import utils.PAYEFeatureSwitches
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads, HttpResponse }
 
 class DesConnectorSpec extends PAYERegSpec with BeforeAndAfter with SubmissionFixture {
 

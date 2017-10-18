@@ -25,12 +25,12 @@ import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSPost
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.control.NoStackTrace
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 class IncorporationInformationResponseException(msg: String) extends NoStackTrace {
   override def getMessage: String = msg

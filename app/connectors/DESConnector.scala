@@ -27,11 +27,12 @@ import play.api.libs.json.Writes
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.http.logging.Authorization
 import utils.PAYEFeatureSwitches
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpErrorFunctions, HttpPost, HttpReads, HttpResponse, Upstream4xxResponse }
+import uk.gov.hmrc.http.logging.Authorization
 
 @Singleton
 class DESConnector extends DESConnect with ServicesConfig {

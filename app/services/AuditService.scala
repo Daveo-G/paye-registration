@@ -27,10 +27,10 @@ import models.submission.{DESCompletionCapacity, TopUpDESSubmission}
 import play.api.libs.json.{JsObject, Json}
 import repositories.{RegistrationMongo, RegistrationRepository}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class AuditService @Inject()(injRegistrationMongoRepository: RegistrationMongo,

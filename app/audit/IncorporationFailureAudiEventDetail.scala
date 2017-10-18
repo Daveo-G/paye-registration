@@ -18,7 +18,7 @@ package audit
 
 import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 import audit.RegistrationAuditEvent.JOURNEY_ID
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 
 case class IncorporationFailureAuditEventDetail(regId: String,
                                                acknowledgementReference: String)

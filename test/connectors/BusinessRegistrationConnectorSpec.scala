@@ -21,9 +21,9 @@ import mocks.WSHTTPMock
 import models.external.BusinessProfile
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import uk.gov.hmrc.play.http.{ForbiddenException, HeaderCarrier, NotFoundException}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ ForbiddenException, HeaderCarrier, NotFoundException }
 
 class BusinessRegistrationConnectorSpec extends PAYERegSpec with WSHTTPMock {
   val mockBusRegConnector = mock[BusinessRegistrationConnector]
