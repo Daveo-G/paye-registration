@@ -26,7 +26,7 @@ import play.api.Logger
 import repositories.{RegistrationMongo, RegistrationMongoRepository}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 @Singleton
 class NotificationService @Inject()(injRegistrationMongoRepository: RegistrationMongo) extends NotificationSrv{

@@ -16,7 +16,7 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 import audit.FailedDesSubmissionEvent
 import config.{MicroserviceAuditConnector, WSHttp}
@@ -26,11 +26,10 @@ import play.api.Logger
 import play.api.libs.json.Writes
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.ServicesConfig
-
 import utils.PAYEFeatureSwitches
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.logging.Authorization
 
@@ -120,7 +119,7 @@ trait DESConnect extends HttpErrorFunctions {
 
   @inline
   private def payePOST[I, O](url: String, body: I, headers: Seq[(String, String)] = Seq.empty)(implicit wts: Writes[I], rds: HttpReads[O], hc: HeaderCarrier) =
-    http.POST[I, O](url, body, headers)(wts = wts, rds = rds, hc = createHeaderCarrier(hc))
+    http.POST[I, O](url, body, headers)(wts = wts, rds = rds, hc = createHeaderCarrier(hc),implicitly)
 
   private[connectors] def useDESStubFeature: Boolean = !featureSwitch.desService.enabled
 

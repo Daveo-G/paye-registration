@@ -22,15 +22,14 @@ import config.WSHttp
 import models.incorporation.IncorpStatusUpdate
 import models.validation.APIValidation
 import play.api.Logger
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject,Json}
 import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.ws.WSPost
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.util.control.NoStackTrace
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.{CorePost, HeaderCarrier, HttpResponse}
 
 class IncorporationInformationResponseException(msg: String) extends NoStackTrace {
   override def getMessage: String = msg
@@ -44,7 +43,7 @@ class IncorporationInformationConnector @Inject()() extends IncorporationInforma
 }
 
 trait IncorporationInformationConnect {
-  val http: WSPost
+  val http: CorePost
   val incorporationInformationUri: String
   val payeRegUri: String
 

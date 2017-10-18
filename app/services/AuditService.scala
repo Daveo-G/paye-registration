@@ -28,7 +28,7 @@ import play.api.libs.json.{JsObject, Json}
 import repositories.{RegistrationMongo, RegistrationRepository}
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 

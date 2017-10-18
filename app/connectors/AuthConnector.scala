@@ -20,11 +20,8 @@ import javax.inject.Singleton
 import config.WSHttp
 import play.api.http.Status._
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http._
-import play.api.Logger
 import play.api.libs.json.Json
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost, HttpResponse }
 

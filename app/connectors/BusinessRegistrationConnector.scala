@@ -23,7 +23,7 @@ import models.external.BusinessProfile
 import play.api.Logger
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
 import uk.gov.hmrc.http._
 

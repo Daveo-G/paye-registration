@@ -21,14 +21,14 @@ import javax.inject.{Inject, Singleton}
 import models.Sequence
 import play.api.Logger
 import play.api.libs.json.JsValue
-import play.modules.reactivemongo.{ReactiveMongoComponent, MongoDbConnection}
+import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.DB
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
 import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.util.control.NoStackTrace
 
 @Singleton

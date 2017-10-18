@@ -16,7 +16,7 @@
 
 package controllers.test
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 import play.api.mvc.Action
 import uk.gov.hmrc.play.microservice.controller.BaseController
