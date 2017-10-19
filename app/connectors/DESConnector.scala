@@ -99,7 +99,7 @@ trait DESConnect extends HttpErrorFunctions {
     } recoverWith {
       case e: Upstream4xxResponse =>
         val event = new FailedDesSubmissionEvent(regId, submission)
-        auditConnector.sendEvent(event)
+        auditConnector.sendExtendedEvent(event)
         Future.failed(e)
     }
   }

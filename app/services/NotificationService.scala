@@ -25,7 +25,7 @@ import models.EmpRefNotification
 import play.api.Logger
 import repositories.{RegistrationMongo, RegistrationMongoRepository}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 @Singleton
@@ -63,7 +63,7 @@ trait NotificationSrv extends ETMPStatusCodes {
     }
   }
 
-  def processNotification(ackRef: String, notification: EmpRefNotification): Future[EmpRefNotification] = {
+  def processNotification(ackRef: String, notification: EmpRefNotification)(implicit ec:ExecutionContext): Future[EmpRefNotification] = {
     for {
       empRefNotification <- registrationRepo.updateRegistrationEmpRef(ackRef, getNewApplicationStatus(notification.status), notification)
       oReg <- registrationRepo.retrieveRegistrationByAckRef(ackRef)
