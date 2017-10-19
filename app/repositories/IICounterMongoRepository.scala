@@ -26,8 +26,7 @@ import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.bson._
 import uk.gov.hmrc.mongo.ReactiveRepository
-
-import scala.language.implicitConversions
+import reactivemongo.play.json._
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.{ExecutionContext, Future}

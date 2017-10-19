@@ -30,7 +30,6 @@ import models.validation.MongoValidation
 import play.api.{Configuration, Logger}
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.BSONSerializationPack.Writer
 import reactivemongo.bson.BSONDocument
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson._
@@ -38,7 +37,6 @@ import reactivemongo.play.json._
 import reactivemongo.api.DB
 import reactivemongo.api.commands.{UpdateWriteResult, WriteResult}
 import reactivemongo.bson.BSONObjectID
-import reactivemongo.core.commands.Match
 import services.MetricsService
 import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
@@ -81,12 +79,12 @@ trait RegistrationRepository {
   def upsertCompletionCapacity(registrationID: String, capacity: String)(implicit ec:ExecutionContext): Future[String]
   def retrieveTransactionId(registrationID: String)(implicit ec:ExecutionContext): Future[String]
   def updateRegistrationEmpRef(ackRef: String, status: PAYEStatus.Value, empRefNotification: EmpRefNotification)(implicit ec:ExecutionContext): Future[EmpRefNotification]
-  def dropCollection: Future[Unit]
-  def cleardownRegistration(registrationID: String): Future[PAYERegistration]
-  def deleteRegistration(registrationID: String): Future[Boolean]
-  def upsertRegTestOnly(p:PAYERegistration,w:OFormat[PAYERegistration]):Future[WriteResult]
-  def removeStaleDocuments(): Future[(ZonedDateTime, Int)]
-  def getRegistrationStats(): Future[Map[String, Int]]
+  def dropCollection(implicit ex:ExecutionContext): Future[Unit]
+  def cleardownRegistration(registrationID: String)(implicit ex:ExecutionContext): Future[PAYERegistration]
+  def deleteRegistration(registrationID: String)(implicit ec:ExecutionContext): Future[Boolean]
+  def upsertRegTestOnly(p:PAYERegistration,w:OFormat[PAYERegistration])(implicit ex:ExecutionContext):Future[WriteResult]
+  def removeStaleDocuments()(implicit ex:ExecutionContext): Future[(ZonedDateTime, Int)]
+  def getRegistrationStats()(implicit ex:ExecutionContext): Future[Map[String, Int]]
 
 }
 
@@ -602,7 +600,7 @@ class RegistrationMongoRepository(mongo: () => DB,
     val selector = registrationIDSelector(registrationID)
     collection.remove(selector) map { writeResult =>
       mongoTimer.stop()
-      if(!writeResult.ok) {Logger.error(s"Error when deleting registration for regId: $registrationID. Error: ${writeResult.message}")}
+      if(!writeResult.ok) {Logger.error(s"Error when deleting registration for regId: $registrationID. Error: ${writeResult.writeConcernError.getOrElse("")}")}
       writeResult.ok
     }
   }
@@ -610,7 +608,7 @@ class RegistrationMongoRepository(mongo: () => DB,
   // TODO - rename the test repo methods
   // Test endpoints
 
-  override def dropCollection: Future[Unit] = {
+  override def dropCollection(implicit ex:ExecutionContext): Future[Unit] = {
     collection.drop()
   }
 
@@ -655,13 +653,14 @@ class RegistrationMongoRepository(mongo: () => DB,
     )
   }
 
-  private def updateRegistrationObject[T](doc: BSONDocument, reg: PAYERegistration)(f: UpdateWriteResult => T): Future[T] = {
+  private def updateRegistrationObject[T](doc: BSONDocument, reg: PAYERegistration)(f: UpdateWriteResult => T)(implicit ex:ExecutionContext)
+  : Future[T] = {
     val timestamp = dh.getTimestamp
 
     collection.update(doc, reg.copy(lastUpdate = dh.formatTimestamp(timestamp), lastAction = Some(timestamp))).map(f)
   }
 
-  def removeStaleDocuments(): Future[(ZonedDateTime, Int)] = {
+  def removeStaleDocuments()(implicit ex:ExecutionContext): Future[(ZonedDateTime, Int)] = {
     val cuttOffDate = dh.getTimestamp.minusDays(MAX_STORAGE_DAYS)
 
     collection.remove(staleDocumentSelector(cuttOffDate)).map {
@@ -675,27 +674,28 @@ class RegistrationMongoRepository(mongo: () => DB,
     BSONDocument("status" -> statusSelector, "lastAction" -> timeSelector)
   }
 
-  private def updateLastAction(reg: PAYERegistration): Future[UpdateWriteResult] = {
+  private def updateLastAction(reg: PAYERegistration)(implicit ex:ExecutionContext): Future[UpdateWriteResult] = {
     val res = dh.zonedDateTimeFromString(reg.lastUpdate)
     collection.update(BSONDocument("registrationID" -> reg.registrationID),BSONDocument("$set" -> BSONDocument("lastAction" -> Json.toJson(res)(MongoValidation.dateFormat))))
   }
 
-  def upsertRegTestOnly(p:PAYERegistration, w: OFormat[PAYERegistration] = PAYERegistration.format(MongoValidation)):Future[WriteResult] = {
+  def upsertRegTestOnly(p:PAYERegistration, w: OFormat[PAYERegistration] = PAYERegistration.format(MongoValidation))
+                       (implicit ex:ExecutionContext):Future[WriteResult] = {
     collection.insert[JsObject](w.writes(p))
   }
 
   override def getRegistrationStats()(implicit ex:ExecutionContext): Future[Map[String, Int]] = {
 
-//    import play.api.libs.json._
+   import play.api.libs.json._
    import reactivemongo.play.json.{collection => col,_}
-    import reactivemongo.core.commands._
+    import reactivemongo.play.json.commands.JSONAggregationFramework._
 
     // perform on all documents in the collection
-    val matchQuery = Match(BSONDocument.empty)
+    val matchQuery = Match(Json.obj())
     // covering query to minimise doc fetch (optimiser would probably spot this anyway and transform the query)
-    val project = Project(Seq("status" -> BSONInteger(1), "_id" -> BSONInteger(0)))
+    val project = Project(Json.obj("status" -> 1, "_id" -> 0))
     // calculate the status counts
-    val group = Group(BSONString("$status"))("count" -> SumValue(1))
+    val group = Group(JsString("$status"))("count" -> SumValue(1))
 
     val metrics = collection.aggregate(matchQuery, List(project, group)) map {
       _.documents map {
