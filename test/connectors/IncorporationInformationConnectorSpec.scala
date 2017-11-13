@@ -83,7 +83,7 @@ class IncorporationInformationConnectorSpec extends PAYERegSpec {
           override def json: JsValue = testJson
         }
 
-        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(),ArgumentMatchers.any()))
           .thenReturn(Future.successful(testResponse))
 
         val result = await(testConnector.getIncorporationUpdate("testTxId", "paye", "SCRS", "testRegId"))
@@ -97,7 +97,7 @@ class IncorporationInformationConnectorSpec extends PAYERegSpec {
           override def status: Int = ACCEPTED
         }
 
-        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(),ArgumentMatchers.any()))
           .thenReturn(Future.successful(testResponse))
 
         val result = await(testConnector.getIncorporationUpdate("testTxId", "paye", "SCRS", "testRegId"))
@@ -111,7 +111,7 @@ class IncorporationInformationConnectorSpec extends PAYERegSpec {
           override def status: Int = INTERNAL_SERVER_ERROR
         }
 
-        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockHttp.POST[JsObject, HttpResponse](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any(),ArgumentMatchers.any()))
           .thenReturn(Future.successful(testResponse))
 
         val result = intercept[IncorporationInformationResponseException](await(testConnector.getIncorporationUpdate("testTxId", "paye", "SCRS", "testRegId")))

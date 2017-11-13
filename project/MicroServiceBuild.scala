@@ -37,7 +37,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % "5.0.0",
     "uk.gov.hmrc" %% "mongo-lock" % "5.0.0",
     "uk.gov.hmrc" %% "play-scheduling" % "4.1.0",
-    "uk.gov.hmrc" %% "crypto" % cryptoVersion
+    "uk.gov.hmrc" %% "crypto" % cryptoVersion,
+    "com.typesafe.play" %% "play-json-joda" % "2.6.7"
   )
 
   trait TestDependencies {

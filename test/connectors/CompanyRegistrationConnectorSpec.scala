@@ -64,7 +64,7 @@ class CompanyRegistrationConnectorSpec extends PAYERegSpec with WSHTTPMock {
 
     "throw a not found exception" when {
       "the reg document cant be found" in new Setup {
-        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.failed(new NotFoundException("Bad request")))
 
         intercept[NotFoundException](await(connector.fetchCompanyRegistrationDocument("testRegId", Some("testTxId"))))
@@ -73,7 +73,7 @@ class CompanyRegistrationConnectorSpec extends PAYERegSpec with WSHTTPMock {
 
     "throw a forbidden exception" when {
       "the request is not authorised" in new Setup {
-        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.failed(new ForbiddenException("Forbidden")))
 
         intercept[ForbiddenException](await(connector.fetchCompanyRegistrationDocument("testRegId", Some("testTxId"))))
@@ -82,7 +82,7 @@ class CompanyRegistrationConnectorSpec extends PAYERegSpec with WSHTTPMock {
 
     "throw an unchecked exception" when {
       "an unexpected response code was returned" in new Setup {
-        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        when(mockWSHttp.GET[BusinessProfile](ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.failed(new RuntimeException("Runtime Exception")))
 
         intercept[Throwable](await(connector.fetchCompanyRegistrationDocument("testRegId", Some("testTxId"))))

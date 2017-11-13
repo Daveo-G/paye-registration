@@ -17,7 +17,8 @@
 package audit
 
 import audit.RegistrationAuditEvent.buildTags
-import play.api.libs.json.{JsObject, JsValue, Json}
+import org.joda.time.DateTime
+import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.http.HeaderCarrier
@@ -49,6 +50,13 @@ abstract class RegistrationAuditEvent(auditType: String, transactionName : Optio
   )
 
 object RegistrationAuditEvent {
+  import play.api.libs.json.JodaWrites._
+  implicit val jDateTime = new Format[DateTime] {
+    override def reads(json: JsValue): JsResult[DateTime] = ???
+
+    override def writes(o: DateTime):JsValue = JodaDateTimeNumberWrites.writes(o)
+  }
+  implicit val formats = Json.format[ExtendedDataEvent]
 
   val EXTERNAL_ID = "externalId"
   val EXTERNAL_USER_ID = "externalUserId"

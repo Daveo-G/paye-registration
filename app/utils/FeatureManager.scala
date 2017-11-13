@@ -18,12 +18,12 @@ package utils
 
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.json.Json
-
+import play.api.libs.json.{Format, JsResult, JsValue, Json}
 sealed trait FeatureSwitch {
   def name: String
   def enabled: Boolean
 }
+
 
 trait TimedFeatureSwitch extends FeatureSwitch {
 
@@ -38,8 +38,8 @@ trait TimedFeatureSwitch extends FeatureSwitch {
     case (None, None) => false
   }
 }
-
 case class BooleanFeatureSwitch(name: String, enabled: Boolean) extends FeatureSwitch
+
 
 case class EnabledTimedFeatureSwitch(name: String, start: Option[DateTime], end: Option[DateTime], target: DateTime) extends TimedFeatureSwitch
 case class DisabledTimedFeatureSwitch(name: String, start: Option[DateTime], end: Option[DateTime], target: DateTime) extends TimedFeatureSwitch {
@@ -85,7 +85,17 @@ object FeatureSwitch {
   def apply(name: String, enabled: Boolean = false): FeatureSwitch = getProperty(name)
   def unapply(fs: FeatureSwitch): Option[(String, Boolean)] = Some(fs.name -> fs.enabled)
 
-  implicit val formats = Json.format[FeatureSwitch]
+  import play.api.libs.json.JodaWrites._
+  implicit val jDateTime = new Format[DateTime] {
+    override def reads(json: JsValue): JsResult[DateTime] = ???
+
+    override def writes(o: DateTime):JsValue = JodaDateTimeNumberWrites.writes(o)
+  }
+  implicit val a = Json.format[BooleanFeatureSwitch]
+  implicit val b = Json.format[EnabledTimedFeatureSwitch]
+  implicit val c = Json.format[DisabledTimedFeatureSwitch]
+
+
 }
 
 object PAYEFeatureSwitches extends PAYEFeatureSwitches {

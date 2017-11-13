@@ -17,7 +17,6 @@
 package models.validation
 
 import java.time.LocalDate
-import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 import scala.collection.Seq
@@ -58,41 +57,41 @@ object APIValidation extends BaseJsonFormatting {
 
   private def isValidNino(nino: String) = nino.nonEmpty && hasValidPrefix(nino) && nino.matches(validNinoFormat)
 
-  override val phoneNumberReads      = Reads.StringReads.filter(ValidationError("Invalid phone number pattern"))(isValidPhoneNumber)
+  override val phoneNumberReads      = Reads.StringReads.filter(JsonValidationError("Invalid phone number pattern"))(isValidPhoneNumber)
 
-  override val emailAddressReads     = Reads.StringReads.filter(ValidationError("Invalid email pattern"))(_.matches(emailRegex))
+  override val emailAddressReads     = Reads.StringReads.filter(JsonValidationError("Invalid email pattern"))(_.matches(emailRegex))
 
-  override val nameReads             = Reads.StringReads.filter(ValidationError("Invalid name"))(_.matches(nameRegex))
+  override val nameReads             = Reads.StringReads.filter(JsonValidationError("Invalid name"))(_.matches(nameRegex))
 
-  override val natureOfBusinessReads = Reads.StringReads.filter(ValidationError("Invalid nature of business"))(_.matches(natureOfBusinessRegex))
+  override val natureOfBusinessReads = Reads.StringReads.filter(JsonValidationError("Invalid nature of business"))(_.matches(natureOfBusinessRegex))
 
-  override val completionCapacityReads: Reads[String] = Reads.StringReads.filter(ValidationError("bad string"))(_.matches(completionCapacityRegex))
+  override val completionCapacityReads: Reads[String] = Reads.StringReads.filter(JsonValidationError("bad string"))(_.matches(completionCapacityRegex))
 
   override val tradingNameFormat     = new Format[String] {
     override def reads(json: JsValue) = json match {
       case JsString(tradingName) => if(tradingName.matches(tradingNameRegex)) {
         JsSuccess(tradingName)
       } else {
-        JsError(Seq(JsPath() -> Seq(ValidationError("Invalid trading name"))))
+        JsError(Seq(JsPath() -> Seq(JsonValidationError("Invalid trading name"))))
       }
-      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring"))))
+      case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.jsstring"))))
     }
 
     override def writes(o: String) = Writes.StringWrites.writes(o)
   }
 
   //Address validation
-  override val addressLineValidate  = Reads.StringReads.filter(ValidationError("Invalid address line pattern"))(_.matches(addressLineRegex))
-  override val addressLine4Validate = Reads.StringReads.filter(ValidationError("Invalid address line 4 pattern"))(_.matches(addressLine4Regex))
-  override val postcodeValidate     = Reads.StringReads.filter(ValidationError("Invalid postcode"))(_.matches(postcodeRegex))
-  override val countryValidate      = Reads.StringReads.filter(ValidationError("Invalid country"))(_.matches(countryRegex))
+  override val addressLineValidate  = Reads.StringReads.filter(JsonValidationError("Invalid address line pattern"))(_.matches(addressLineRegex))
+  override val addressLine4Validate = Reads.StringReads.filter(JsonValidationError("Invalid address line 4 pattern"))(_.matches(addressLine4Regex))
+  override val postcodeValidate     = Reads.StringReads.filter(JsonValidationError("Invalid postcode"))(_.matches(postcodeRegex))
+  override val countryValidate      = Reads.StringReads.filter(JsonValidationError("Invalid country"))(_.matches(countryRegex))
 
   override val firstPaymentDateFormat: Format[LocalDate] = {
-    val rds = Reads.DefaultLocalDateReads.filter(ValidationError("invalid date - too early"))(date => !beforeMinDate(date))
+    val rds = Reads.DefaultLocalDateReads.filter(JsonValidationError("invalid date - too early"))(date => !beforeMinDate(date))
     Format(rds, Writes.DefaultLocalDateWrites)
   }
 
-  override val directorNameFormat   = readToFmt(Reads.StringReads.filter(ValidationError("error.pattern"))(_.matches(directorNameRegex)))
-  override val directorTitleFormat  = readToFmt(Reads.StringReads.filter(ValidationError("error.pattern"))(_.matches(directorTitleRegex)))
-  override val directorNinoFormat   = readToFmt(Reads.StringReads.filter(ValidationError("error.pattern"))(isValidNino))
+  override val directorNameFormat   = readToFmt(Reads.StringReads.filter(JsonValidationError("error.pattern"))(_.matches(directorNameRegex)))
+  override val directorTitleFormat  = readToFmt(Reads.StringReads.filter(JsonValidationError("error.pattern"))(_.matches(directorTitleRegex)))
+  override val directorNinoFormat   = readToFmt(Reads.StringReads.filter(JsonValidationError("error.pattern"))(isValidNino))
 }

@@ -28,9 +28,9 @@ import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.test.FakeRequest
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
-
+import scala.concurrent.ExecutionContext.Implicits.global
 class RepositoryControllerSpec extends PAYERegSpec with AuthFixture {
 
   val mockRegistrationService = mock[RegistrationService]

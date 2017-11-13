@@ -24,8 +24,8 @@ import repositories.{RegistrationMongo, RegistrationMongoRepository}
 import org.mockito.Mockito.when
 import org.mockito.ArgumentMatchers
 
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 class NotificationServiceSpec extends PAYERegSpec with RegistrationFixture {
 
   class Setup {

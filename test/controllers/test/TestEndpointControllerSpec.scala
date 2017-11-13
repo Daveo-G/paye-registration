@@ -29,7 +29,7 @@ import org.mockito.Mockito._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
-
+import scala.concurrent.ExecutionContext.Implicits.global
 class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with RegistrationFixture {
 
   val mockRepo = mock[RegistrationMongoRepository]

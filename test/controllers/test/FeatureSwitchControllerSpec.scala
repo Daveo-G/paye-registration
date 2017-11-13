@@ -18,14 +18,14 @@ package controllers.test
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
+
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{BAD_REQUEST, OK}
 import helpers.PAYERegSpec
 import utils.{BooleanFeatureSwitch, PAYEFeatureSwitches}
 
 import scala.concurrent.Future
+
 class FeatureSwitchControllerSpec extends PAYERegSpec {
 
   implicit val system = ActorSystem("PR")

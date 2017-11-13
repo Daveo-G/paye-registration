@@ -23,8 +23,8 @@ import repositories.{IICounterMongo, IICounterMongoRepository}
 import org.mockito.Mockito._
 import play.api.Configuration
 
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 /**
   * Created by eric on 29/08/17.
   */

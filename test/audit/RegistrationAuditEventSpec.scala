@@ -17,11 +17,12 @@
 package audit
 
 import models.submission.DESCompletionCapacity
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import uk.gov.hmrc.play.test.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.{ Authorization, ForwardedFor, RequestId, SessionId }
+import audit.RegistrationAuditEvent.formats
 
 class RegistrationAuditEventSpec extends UnitSpec {
 

@@ -36,10 +36,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 
-import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
-
+import scala.concurrent.ExecutionContext.Implicits.global
 class SubmissionServiceSpec extends PAYERegSpec {
 
   val mockDESConnector = mock[DESConnector]

@@ -34,12 +34,12 @@ import play.api.http.Status
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.test.FakeRequest
-import play.api.mvc.Results.{Ok, BadRequest}
-import play.api.http.Status.{OK, BAD_REQUEST}
+import play.api.mvc.Results.{BadRequest, Ok}
+import play.api.http.Status.{BAD_REQUEST, OK}
 import repositories.RegistrationMongoRepository
 import services._
-
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class RegistrationControllerSpec extends PAYERegSpec with AuthFixture with RegistrationFixture {
@@ -1641,7 +1641,7 @@ class RegistrationControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
       val errorStatus = RegistrationInvalidStatus(validRegistration.registrationID,PAYEStatus.draft.toString)
 
-      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")
+      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")(HeaderCarrier())
 
       status(response) shouldBe Status.INTERNAL_SERVER_ERROR
     }
@@ -1652,7 +1652,7 @@ class RegistrationControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
       val errorStatus = RegistrationInvalidStatus(validRegistration.registrationID,PAYEStatus.draft.toString)
 
-      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")
+      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")(HeaderCarrier())
 
       status(response) shouldBe Status.INTERNAL_SERVER_ERROR
     }
@@ -1663,7 +1663,7 @@ class RegistrationControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
       val errorStatus = RegistrationInvalidStatus(validRegistration.registrationID,PAYEStatus.draft.toString)
 
-      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")
+      val response = controller.registrationInvalidStatusHandler(errorStatus,"NN1234")(HeaderCarrier())
 
       status(response) shouldBe Status.OK
     }

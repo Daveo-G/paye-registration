@@ -24,11 +24,8 @@ import enums.IncorporationStatus
 import helpers.DateHelper
 import models.Address
 import models.incorporation.IncorpStatusUpdate
-import play.api.data.validation.ValidationError
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-
-import scala.collection.Seq
 
 trait BaseJsonFormatting extends DateHelper {
   private val companyNameRegex = """^[A-Za-z 0-9\-,.()/'&\"!%*_+:@<>?=;]{1,160}$"""
@@ -62,9 +59,11 @@ trait BaseJsonFormatting extends DateHelper {
       case JsString(companyName) => if(cleanseCompanyName(companyName).matches(companyNameRegex)) {
         JsSuccess(companyName)
       } else {
-        JsError(Seq(JsPath() -> Seq(ValidationError("Invalid company name"))))
+        JsError(Seq(JsPath() -> Seq(JsonValidationError("Invalid company name"))))
+//        JsError(Seq(JsPath() -> Seq(ValidationError("Invalid company name"))))
       }
-      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring"))))
+      case _ => JsError(Seq(JsPath() -> Seq(JsonValidationError("error.expected.jsstring"))))
+//        Seq(ValidationError("error.expected.jsstring"))))
     }
 
     override def writes(o: String) = Writes.StringWrites.writes(o)
@@ -94,15 +93,15 @@ trait BaseJsonFormatting extends DateHelper {
   val cryptoFormat: Format[String] = readToFmt(standardRead)
 
   def addressReadsWithFilter(readsDef: Reads[Address]): Reads[Address] = {
-    readsDef.filter(ValidationError("neither postcode nor country was completed")) {
+    readsDef.filter(JsonValidationError("neither postcode nor country was completed")) {
       addr => addr.postCode.isDefined || addr.country.isDefined
-    }.filter(ValidationError("both postcode and country were completed")) {
+    }.filter(JsonValidationError("both postcode and country were completed")) {
       addr => !(addr.postCode.isDefined && addr.country.isDefined)
     }
   }
 
   def incorpStatusUpdateReadsWithFilter(readsDef: Reads[IncorpStatusUpdate]): Reads[IncorpStatusUpdate] = {
-    readsDef.filter(ValidationError("no CRN defined when expected"))(
+    readsDef.filter(JsonValidationError("no CRN defined when expected"))(
       update => update.status == IncorporationStatus.rejected || update.crn.isDefined
     )
   }

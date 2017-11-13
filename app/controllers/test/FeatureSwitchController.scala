@@ -24,6 +24,7 @@ import utils._
 
 import scala.concurrent.Future
 
+
 @Singleton
 class FeatureSwitchController extends FeatureSwitchCtrl
 
@@ -35,7 +36,6 @@ trait FeatureSwitchCtrl extends BaseController {
 
   def switch(featureName: String, featureState: String) = Action.async {
     implicit request =>
-
       def feature: FeatureSwitch = featureState match {
         case "true" => fs.enable(BooleanFeatureSwitch(featureName, enabled = true))
         case _ => fs.disable(BooleanFeatureSwitch(featureName, enabled = false))

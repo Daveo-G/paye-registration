@@ -22,7 +22,7 @@ import config.WSHttp
 import play.api.Logger
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.http._
 

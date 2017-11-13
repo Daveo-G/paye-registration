@@ -26,10 +26,10 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
-
+import scala.concurrent.ExecutionContext.Implicits.global
 class AuditServiceSpec extends PAYERegSpec with RegistrationFixture with AuthFixture {
   val mockAuditConnector = mock[AuditConnector]
 
