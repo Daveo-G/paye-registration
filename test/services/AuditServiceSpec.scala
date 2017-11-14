@@ -65,7 +65,7 @@ class AuditServiceSpec extends PAYERegSpec with RegistrationFixture with AuthFix
       when(mockAuthConnector.getUserDetails(ArgumentMatchers.any()))
         .thenReturn(Future.successful(Some(validUserDetailsModel)))
 
-      when(mockAuditConnector.sendEvent(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      when(mockAuditConnector.sendExtendedEvent(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
           .thenReturn(Future.successful(AuditResult.Success))
 
       await(service.auditCompletionCapacity(regId, previousCC, newCC)) shouldBe AuditResult.Success
@@ -74,13 +74,13 @@ class AuditServiceSpec extends PAYERegSpec with RegistrationFixture with AuthFix
 
   "Calling fetchAddressAuditRefs" should {
     "return a map of enums to refs" in new Setup {
-      when(mockRegistrationRepository.retrieveRegistration(ArgumentMatchers.any()))
+      when(mockRegistrationRepository.retrieveRegistration(ArgumentMatchers.any())(ArgumentMatchers.any()))
         .thenReturn(Future.successful(Some(validRegistration.copy(companyDetails = Some(validCompanyDetailsWithAuditRef)))))
 
       await(service.fetchAddressAuditRefs("regId")) shouldBe Map(AddressTypes.roAdddress -> "roAuditRef")
     }
     "throw a MissingRegDocument exception when there is no Registration object returned from mongo" in new Setup {
-      when(mockRegistrationRepository.retrieveRegistration(ArgumentMatchers.any()))
+      when(mockRegistrationRepository.retrieveRegistration(ArgumentMatchers.any())(ArgumentMatchers.any()))
         .thenReturn(Future.successful(None))
 
       intercept[MissingRegDocument](await(service.fetchAddressAuditRefs("regId")))
