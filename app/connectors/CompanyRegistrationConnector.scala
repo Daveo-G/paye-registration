@@ -19,10 +19,10 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.WSHttp
-import play.api.Logger
+import org.slf4j.{Logger, LoggerFactory}
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.http._
 
@@ -36,16 +36,18 @@ trait CompanyRegistrationConnect {
   val compRegUrl: String
   val http: CoreGet
 
+  implicit val self = getClass
+
   def fetchCompanyRegistrationDocument(regId: String, txId: Option[String])(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.GET[HttpResponse](s"$compRegUrl/company-registration/corporation-tax-registration/$regId/corporation-tax-registration") recover {
       case e: NotFoundException =>
-        Logger.error(s"[CompanyRegistrationConnector] - [fetchCompanyRegistrationDocument] : Received a NotFound status code when expecting reg document from Company-Registration for regId: $regId and txId: $txId")
+        logger.error(s"[fetchCompanyRegistrationDocument] : Received a NotFound status code when expecting reg document from Company-Registration for regId: $regId and txId: $txId")
         throw e
       case e: ForbiddenException =>
-        Logger.error(s"[CompanyRegistrationConnector] - [fetchCompanyRegistrationDocument] : Received a Forbidden status code when expecting reg document from Company-Registration for regId: $regId and txId: $txId")
+        logger.error(s"[fetchCompanyRegistrationDocument] : Received a Forbidden status code when expecting reg document from Company-Registration for regId: $regId and txId: $txId")
         throw e
       case e: Exception =>
-        Logger.error(s"[CompanyRegistrationConnector] - [fetchCompanyRegistrationDocument] : Received error when expecting reg document from Company-Registration for regId: $regId and txId: $txId - Error ${e.getMessage}")
+        logger.error(s"[fetchCompanyRegistrationDocument] : Received error when expecting reg document from Company-Registration for regId: $regId and txId: $txId - Error ${e.getMessage}")
         throw e
     }
   }

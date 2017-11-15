@@ -23,7 +23,7 @@ import models.{Eligibility, EmpRefNotification, PAYERegistration}
 import play.api.Configuration
 import play.api.libs.json.JsObject
 import reactivemongo.api.commands.WriteResult
-import reactivemongo.json.ImplicitBSONHandlers
+import reactivemongo.play.json.ImplicitBSONHandlers
 import services.MetricsService
 
 import scala.concurrent.Future

@@ -99,7 +99,7 @@ class RepositoryControllerSpec extends PAYERegSpec with AuthFixture {
       "there is a mongo problem" in new Setup {
         validAuth()
 
-        when(mockRegistrationService.deletePAYERegistration(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any()))
+        when(mockRegistrationService.deletePAYERegistration(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(false))
 
         val response = controller.deleteRegistrationFromDashboard("AC123456")(FakeRequest())
@@ -111,7 +111,7 @@ class RepositoryControllerSpec extends PAYERegSpec with AuthFixture {
       "an invalid or draft document has been deleted" in new Setup {
         validAuth()
 
-        when(mockRegistrationService.deletePAYERegistration(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any()))
+        when(mockRegistrationService.deletePAYERegistration(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(true))
 
         val response = controller.deleteRegistrationFromDashboard("AC123456")(FakeRequest())

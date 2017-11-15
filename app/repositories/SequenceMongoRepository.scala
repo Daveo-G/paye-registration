@@ -54,7 +54,7 @@ class SequenceMongoRepository(mongo: () => DB)
       _.result[JsValue] match {
         // $COVERAGE-OFF$
         case None => {
-          Logger.error("[SequenceRepository] - [getNext] returned a None when Upserting")
+          logger.error("[SequenceRepository] - [getNext] returned a None when Upserting")
           class InvalidSequence extends NoStackTrace
           throw new InvalidSequence
         }

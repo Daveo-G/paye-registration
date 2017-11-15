@@ -16,8 +16,7 @@
 
 package models
 
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsPath, JsSuccess, Json}
+import play.api.libs.json.{JsPath, JsSuccess, Json, JsonValidationError}
 import uk.gov.hmrc.play.test.UnitSpec
 import java.time.LocalDate
 
@@ -72,7 +71,7 @@ class EmploymentSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[Employment](json)(Employment.format(APIValidation))
-      shouldHaveErrors(result, JsPath() \ "first-payment-date", Seq(ValidationError(
+      shouldHaveErrors(result, JsPath() \ "first-payment-date", Seq(JsonValidationError(
         "error.expected.date.isoformat")))
     }
 
@@ -89,7 +88,7 @@ class EmploymentSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[Employment](json)(Employment.format(APIValidation))
-      shouldHaveErrors(result, JsPath() \ "first-payment-date", Seq(ValidationError(
+      shouldHaveErrors(result, JsPath() \ "first-payment-date", Seq(JsonValidationError(
         "invalid date - too early")))
     }
   }

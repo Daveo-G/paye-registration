@@ -56,7 +56,7 @@
     <logger name="org.apache.http" level="INFO"/>
 
 
-    <logger name="application" level="INFO"/>
+    <logger name="application" level="Info"/>
     <logger name="connector" level="INFO">
         <appender-ref ref="STDOUT"/>
     </logger>

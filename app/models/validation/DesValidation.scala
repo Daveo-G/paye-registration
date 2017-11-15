@@ -16,16 +16,17 @@
 
 package models.validation
 
-import play.api.Logger
+import utils.CustomLogger._
 import play.api.libs.json.{Format, JsValue, Reads, Writes}
 
 object DesValidation extends BaseJsonFormatting {
+  implicit val className = getClass
   override val companyNameFormatter = new Format[String] {
     override def reads(json: JsValue) = Reads.StringReads.reads(json)
 
     override def writes(companyName: String) = {
       val normalised = cleanseCompanyName(companyName)
-      Logger.info(s"[CompanyDetailsValidator] - [companyNameForDES] - Company name before normalisation was $companyName and after; $normalised")
+      logger.info(s"[CompanyDetailsValidator] - [companyNameForDES] - Company name before normalisation was $companyName and after; $normalised")
       Writes.StringWrites.writes(normalised)
     }
   }

@@ -31,7 +31,7 @@ import javax.inject.{Inject, Singleton}
 import common.exceptions.DBExceptions.{MissingRegDocument, RetrieveFailed, UpdateFailed}
 import models.incorporation.IncorpStatusUpdate
 import models.validation.APIValidation
-import play.api.Logger
+import utils.CustomLogger._
 import play.api.libs.json._
 import repositories.RegistrationMongoRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -60,6 +60,8 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
   val notificationService: NotificationService
   val counterService: IICounterSrv
 
+  implicit val implemenentingClassName = getClass
+
   def newPAYERegistration(regID: String) : Action[JsValue] = Action.async(parse.json) {
     implicit request =>
       authenticated {
@@ -82,10 +84,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getPAYERegistration] User not logged in")
+          logger.info(s"[RegistrationController] [getPAYERegistration] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getPAYERegistration] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getPAYERegistration] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -100,10 +102,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getCompanyDetails] User not logged in")
+          logger.info(s"[RegistrationController] [getCompanyDetails] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getCompanyDetails] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getCompanyDetails] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -122,10 +124,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertCompanyDetails] User not logged in")
+          logger.info(s"[RegistrationController] [upsertCompanyDetails] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertCompanyDetails] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertCompanyDetails] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -140,10 +142,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None             => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getEmployment] User not logged in")
+          logger.info(s"[RegistrationController] [getEmployment] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getEmployment] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getEmployment] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -161,10 +163,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertEmployment] User not logged in")
+          logger.info(s"[RegistrationController] [upsertEmployment] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertEmployment] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertEmployment] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -179,13 +181,13 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case directors: Seq[Director]      => Ok(Json.toJson(directors)(Director.directorSequenceWriter(APIValidation)))
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getDirectors] User not logged in")
+          logger.info(s"[RegistrationController] [getDirectors] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getDirectors] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getDirectors] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) =>
-          Logger.info(s"[RegistrationController] [getDirectors] Auth resource not found for $regID")
+          logger.info(s"[RegistrationController] [getDirectors] Auth resource not found for $regID")
           Future.successful(NotFound)
       }
   }
@@ -203,10 +205,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertDirectors] User not logged in")
+          logger.info(s"[RegistrationController] [upsertDirectors] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertDirectors] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertDirectors] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -221,10 +223,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case sicCodes: Seq[SICCode] => Ok(Json.toJson(sicCodes))
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getSICCodes] User not logged in")
+          logger.info(s"[RegistrationController] [getSICCodes] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getSICCodes] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getSICCodes] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -242,10 +244,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertSICCodes] User not logged in")
+          logger.info(s"[RegistrationController] [upsertSICCodes] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertSICCodes] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertSICCodes] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -260,10 +262,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getPAYEContact] User not logged in")
+          logger.info(s"[RegistrationController] [getPAYEContact] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getPAYEContact] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getPAYEContact] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -282,10 +284,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertPAYEContact] User not logged in")
+          logger.info(s"[RegistrationController] [upsertPAYEContact] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertPAYEContact] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertPAYEContact] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -300,10 +302,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getCompletionCapacity] User not logged in")
+          logger.info(s"[RegistrationController] [getCompletionCapacity] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getCompletionCapacity] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getCompletionCapacity] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -323,10 +325,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [upsertCompletionCapacity] User not logged in")
+          logger.info(s"[RegistrationController] [upsertCompletionCapacity] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [upsertCompletionCapacity] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [upsertCompletionCapacity] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -340,14 +342,14 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case _: RejectedIncorporationException => NoContent
             case ex: SubmissionMarshallingException => BadRequest(s"Registration was submitted without full data: ${ex.getMessage}")
             case e =>
-              Logger.error(s"[RegistrationController] [submitPAYERegistration] Error while submitting to DES the registration with regId $regID - error:", e)
+              logger.error(s"[RegistrationController] [submitPAYERegistration] Error while submitting to DES the registration with regId $regID - error:", e)
               throw e
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [submitPAYERegistration] User not logged in")
+          logger.info(s"[RegistrationController] [submitPAYERegistration] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [submitPAYERegistration] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [submitPAYERegistration] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -362,10 +364,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getAcknowledgementReference] User not logged in")
+          logger.info(s"[RegistrationController] [getAcknowledgementReference] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getAcknowledgementReference] User logged in but not authorised for resource $regID")
+          logger.info(s"[RegistrationController] [getAcknowledgementReference] User logged in but not authorised for resource $regID")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -377,7 +379,7 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
         val transactionId = statusUpdate.transactionId
         registrationService.fetchPAYERegistrationByTransactionID(transactionId) flatMap {
           case None =>
-            Logger.error(s"[RegistrationController] [processIncorporationData] No registration found for transaction id $transactionId")
+            logger.error(s"[RegistrationController] [processIncorporationData] No registration found for transaction id $transactionId")
             throw new MissingRegDocument(transactionId)
           case Some(reg) =>
             submissionService.submitTopUpToDES(reg.registrationID, statusUpdate) map (_ => Ok(Json.toJson(statusUpdate.crn)))
@@ -388,10 +390,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
           Future.successful(Ok(s"No registration found for transaction id $transactionId"))
         case error: RegistrationInvalidStatus => registrationInvalidStatusHandler(error, transactionId)
         case mongo @ (_: UpdateFailed | _: RetrieveFailed) =>
-          Logger.error(s"[RegistrationController] - [processIncorporationData] - Failed to process Incorporation Update for transaction ID '$transactionId' - database error. The update may have completed successfully downstream")
+          logger.error(s"[RegistrationController] - [processIncorporationData] - Failed to process Incorporation Update for transaction ID '$transactionId' - database error. The update may have completed successfully downstream")
           Future.successful(InternalServerError)
         case e =>
-          Logger.error(s"[RegistrationController] [processIncorporationData] Error while processing Incorporation Data for registration with transactionId $transactionId - error: ${e.getMessage}")
+          logger.error(s"[RegistrationController] [processIncorporationData] Error while processing Incorporation Data for registration with transactionId $transactionId - error: ${e.getMessage}")
           throw e
       }
     }
@@ -399,13 +401,13 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
 
   def registrationInvalidStatusHandler(regInvalidError: RegistrationInvalidStatus, transactionId: String)(implicit hc:HeaderCarrier):Future[Result] ={
     counterService.updateIncorpCount(regInvalidError.regId)(implicitly[ExecutionContext]) map {
-        case true => Logger.info(s"[RegistrationController] - [processIncorporationData] - II has called with regID: ${regInvalidError.regId} more than ${counterService.maxIICounterCount} times")
+        case true => logger.info(s"[RegistrationController] - [processIncorporationData] - II has called with regID: ${regInvalidError.regId} more than ${counterService.maxIICounterCount} times")
           Ok(s" II has called with regID: ${regInvalidError.regId} more than ${counterService.maxIICounterCount} times")
-        case false => Logger.warn(s"[RegistrationController] - [processIncorporationData] - Warning cannot process Incorporation Update for transaction ID '$transactionId' - ${regInvalidError.getMessage}")
+        case false => logger.warn(s"[RegistrationController] - [processIncorporationData] - Warning cannot process Incorporation Update for transaction ID '$transactionId' - ${regInvalidError.getMessage}")
           InternalServerError
       } recover {
       case error: UpdateFailed =>
-        Logger.error(s"[RegistrationController] - [processIncorporation] returned a None when trying to upsert ${regInvalidError.regId} for transaction ID '$transactionId' - ${regInvalidError.getMessage}")
+        logger.error(s"[RegistrationController] - [processIncorporation] returned a None when trying to upsert ${regInvalidError.regId} for transaction ID '$transactionId' - ${regInvalidError.getMessage}")
         InternalServerError
     }
   }
@@ -420,10 +422,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case None => NotFound
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getEligibility] User not logged in")
+          logger.info(s"[RegistrationController] [getEligibility] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getEligibility] User logged in but not authorised for resource $regId")
+          logger.info(s"[RegistrationController] [getEligibility] User logged in but not authorised for resource $regId")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -441,10 +443,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             }
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [updateEligibility] User not logged in")
+          logger.info(s"[RegistrationController] [updateEligibility] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [updateEligibility] User logged in but not authorised for resource $regId")
+          logger.info(s"[RegistrationController] [updateEligibility] User logged in but not authorised for resource $regId")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -471,10 +473,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case missing: MissingRegDocument => NotFound(s"No PAYE registration document found for registration ID $regId")
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [getDocumentStatus] User not logged in")
+          logger.info(s"[RegistrationController] [getDocumentStatus] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [getDocumentStatus] User logged in but not authorised for resource $regId")
+          logger.info(s"[RegistrationController] [getDocumentStatus] User logged in but not authorised for resource $regId")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }
@@ -490,10 +492,10 @@ trait RegistrationCtrl extends BaseController with Authenticated with Authorisat
             case _: UnmatchedStatusException => PreconditionFailed
           }
         case NotLoggedInOrAuthorised =>
-          Logger.info(s"[RegistrationController] [deletePAYERegistration] User not logged in")
+          logger.info(s"[RegistrationController] [deletePAYERegistration] User not logged in")
           Future.successful(Forbidden)
         case NotAuthorised(_) =>
-          Logger.info(s"[RegistrationController] [deletePAYERegistration] User logged in but not authorised for resource $regId")
+          logger.info(s"[RegistrationController] [deletePAYERegistration] User logged in but not authorised for resource $regId")
           Future.successful(Forbidden)
         case AuthResourceNotFound(_) => Future.successful(NotFound)
       }

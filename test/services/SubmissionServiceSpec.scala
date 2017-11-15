@@ -321,7 +321,7 @@ class SubmissionServiceSpec extends PAYERegSpec {
 
   "Calling assertOrGenerateAcknowledgementReference" should {
     "return an ack ref if there is one in the registration" in new Setup {
-      when(mockRegistrationRepository.retrieveAcknowledgementReference(ArgumentMatchers.anyString()))
+      when(mockRegistrationRepository.retrieveAcknowledgementReference(ArgumentMatchers.anyString())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(Some("tstAckRef")))
 
       await(service.assertOrGenerateAcknowledgementReference("regID")) shouldBe "tstAckRef"
@@ -335,7 +335,7 @@ class SubmissionServiceSpec extends PAYERegSpec {
       when(mockRegistrationRepository.saveAcknowledgementReference(ArgumentMatchers.anyString(), ArgumentMatchers.contains("1234"))(ArgumentMatchers.any()))
       .thenReturn(Future.successful("BRPY00000001234"))
 
-      await(service.assertOrGenerateAcknowledgementReference("regID")(ArgumentMatchers.any())) shouldBe "BRPY00000001234"
+      await(service.assertOrGenerateAcknowledgementReference("regID")) shouldBe "BRPY00000001234"
     }
   }
 

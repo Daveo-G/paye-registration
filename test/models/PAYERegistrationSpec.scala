@@ -21,8 +21,7 @@ import java.time.{LocalDate, LocalDateTime, ZoneOffset, ZonedDateTime}
 
 import enums.PAYEStatus
 import models.validation.MongoValidation
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsPath, JsSuccess, Json}
+import play.api.libs.json.{JsPath, JsSuccess, Json, JsonValidationError}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
@@ -398,7 +397,7 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[PAYERegistration](json)
-      shouldHaveErrors(result, JsPath() \ "registrationID", Seq(ValidationError("error.path.missing")))
+      shouldHaveErrors(result, JsPath() \ "registrationID", Seq(JsonValidationError("error.path.missing")))
     }
 
     "fail from json without transactionID" in {
@@ -449,7 +448,7 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[PAYERegistration](json)
-      shouldHaveErrors(result, JsPath() \ "transactionID", Seq(ValidationError("error.path.missing")))
+      shouldHaveErrors(result, JsPath() \ "transactionID", Seq(JsonValidationError("error.path.missing")))
     }
 
     "fail if the status isn't one of the pre defined PAYE statuses" in {
@@ -501,7 +500,7 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[PAYERegistration](json)
-      shouldHaveErrors(result, JsPath() \ "status", Seq(ValidationError("error.expected.validenumvalue")))
+      shouldHaveErrors(result, JsPath() \ "status", Seq(JsonValidationError("error.expected.validenumvalue")))
     }
 
     "fail from json without lastUpdate" in {
@@ -552,7 +551,7 @@ class PAYERegistrationSpec extends UnitSpec with JsonFormatValidation {
         """.stripMargin)
 
       val result = Json.fromJson[PAYERegistration](json)
-      shouldHaveErrors(result, JsPath() \ "lastUpdate", Seq(ValidationError("error.path.missing")))
+      shouldHaveErrors(result, JsPath() \ "lastUpdate", Seq(JsonValidationError("error.path.missing")))
     }
   }
 }

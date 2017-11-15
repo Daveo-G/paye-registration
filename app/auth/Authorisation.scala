@@ -17,7 +17,7 @@
 package auth
 
 import play.api.mvc.Result
-import play.api.Logger
+import utils.CustomLogger._
 import connectors.{AuthConnect, Authority}
 
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -35,6 +35,8 @@ trait Authorisation[I] {
   val auth: AuthConnect
   val resourceConn : AuthorisationResource[I]
 
+  implicit val self = getClass
+
   def authorised(id:I)(f: => AuthorisationResult => Future[Result])(implicit hc: HeaderCarrier) = {
     for {
       authority <- auth.getCurrentAuthority()
@@ -48,16 +50,16 @@ trait Authorisation[I] {
   private def mapToAuthResult(authContext: Option[Authority], resource: Option[(I,String)] ) : AuthorisationResult = {
     authContext match {
       case None =>
-        Logger.warn("[Authorisation] - [mapToAuthResult]: No authority was found")
+        logger.warn("[Authorisation] - [mapToAuthResult]: No authority was found")
         NotLoggedInOrAuthorised
       case Some(context) => {
         resource match {
           case None =>
-            Logger.info("[Authorisation] - [mapToAuthResult]: No auth resource was found for the current user")
+            logger.info("[Authorisation] - [mapToAuthResult]: No auth resource was found for the current user")
             AuthResourceNotFound(context)
           case Some((_, context.ids.internalId)) => Authorised(context)
           case Some((_, _)) =>
-            Logger.warn("[Authorisation] - [mapToAuthResult]: The current user is not authorised to access this resource")
+            logger.warn("[Authorisation] - [mapToAuthResult]: The current user is not authorised to access this resource")
             NotAuthorised (context)
         }
       }

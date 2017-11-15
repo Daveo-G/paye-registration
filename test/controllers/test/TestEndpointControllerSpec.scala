@@ -48,14 +48,14 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
   "Teardown registration collection" should {
     "return a 200 response for success" in new Setup {
-      when(mockRepo.dropCollection).thenReturn(Future.successful(()))
+      when(mockRepo.dropCollection(ArgumentMatchers.any())).thenReturn(Future.successful(()))
 
       val response = await(controller.registrationTeardown()(FakeRequest()))
       status(response) shouldBe Status.OK
     }
 
     "return a 500 response for failure" in new Setup {
-      when(mockRepo.dropCollection).thenReturn(Future.failed(new RuntimeException("test failure message")))
+      when(mockRepo.dropCollection(ArgumentMatchers.any())).thenReturn(Future.failed(new RuntimeException("test failure message")))
 
       val response = await(controller.registrationTeardown()(FakeRequest()))
       status(response) shouldBe Status.INTERNAL_SERVER_ERROR
@@ -64,14 +64,14 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
   "Delete Registration" should {
     "return a 200 response for success" in new Setup {
-      when(mockRepo.deleteRegistration(ArgumentMatchers.any())).thenReturn(Future.successful(true))
+      when(mockRepo.deleteRegistration(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(Future.successful(true))
 
       val response = await(controller.deleteRegistration("AC123456")(FakeRequest()))
       status(response) shouldBe Status.OK
     }
 
     "return a 500 response for failure" in new Setup {
-      when(mockRepo.deleteRegistration(ArgumentMatchers.any())).thenReturn(Future.failed(new RuntimeException("test failure message")))
+      when(mockRepo.deleteRegistration(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(Future.failed(new RuntimeException("test failure message")))
 
       val response = await(controller.deleteRegistration("AC123456")(FakeRequest()))
       status(response) shouldBe Status.INTERNAL_SERVER_ERROR
@@ -80,7 +80,7 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
   "Insert Registration" should {
     "return a 200 response for success" in new Setup {
-      when(mockRepo.updateRegistration(ArgumentMatchers.any())).thenReturn(Future.successful(validRegistration))
+      when(mockRepo.updateRegistration(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(Future.successful(validRegistration))
       when(mockAuthConnector.getCurrentAuthority()(ArgumentMatchers.any[HeaderCarrier]()))
         .thenReturn(Future.successful(Some(validAuthority)))
 
@@ -89,7 +89,7 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
     }
 
     "return a 500 response for failure" in new Setup {
-      when(mockRepo.updateRegistration(ArgumentMatchers.any())).thenReturn(Future.failed(new RuntimeException("test failure message")))
+      when(mockRepo.updateRegistration(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(Future.failed(new RuntimeException("test failure message")))
       when(mockAuthConnector.getCurrentAuthority()(ArgumentMatchers.any[HeaderCarrier]()))
         .thenReturn(Future.successful(Some(validAuthority)))
 
@@ -116,13 +116,13 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
 
   "newStatus" should {
     "return a 200 response for success" in new Setup {
-      when(mockRepo.createNewRegistration(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+      when(mockRepo.createNewRegistration(ArgumentMatchers.anyString(), ArgumentMatchers.anyString(), ArgumentMatchers.anyString())(ArgumentMatchers.any()))
         .thenReturn(Future.successful(validRegistration))
 
-      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any()))
+      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(PAYEStatus.draft))
 
-      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC654321"), ArgumentMatchers.any()))
+      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC654321"), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.failed(new RuntimeException("")))
 
       def newstatus(s: String) = await(controller.newStatus("AC123456", s)(FakeRequest()))
@@ -140,7 +140,7 @@ class TestEndpointControllerSpec extends PAYERegSpec with AuthFixture with Regis
   "updateStatus" should {
     "return a 200 response for success" in new Setup {
 
-      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any()))
+      when(mockRepo.updateRegistrationStatus(ArgumentMatchers.eq("AC123456"), ArgumentMatchers.any())(ArgumentMatchers.any()))
         .thenReturn(Future.successful(PAYEStatus.draft))
 
       status(await(controller.updateStatus("AC123456", "submitted")(FakeRequest()))) shouldBe Status.OK

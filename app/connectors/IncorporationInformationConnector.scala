@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import config.WSHttp
 import models.incorporation.IncorpStatusUpdate
 import models.validation.APIValidation
-import play.api.Logger
 import play.api.libs.json.{JsObject,Json}
 import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -47,6 +46,8 @@ trait IncorporationInformationConnect {
   val incorporationInformationUri: String
   val payeRegUri: String
 
+  implicit val self = getClass
+
   private[connectors] def constructIncorporationInfoUri(transactionId: String, regime: String, subscriber: String): String = {
     s"/incorporation-information/subscribe/$transactionId/regime/$regime/subscriber/$subscriber"
   }
@@ -58,7 +59,7 @@ trait IncorporationInformationConnect {
         case OK => Some(resp.json.as[IncorpStatusUpdate](IncorpStatusUpdate.reads(APIValidation)))
         case ACCEPTED => None
         case _ =>
-          Logger.error(s"[IncorporationInformationConnect] - [getIncorporationUpdate] returned a ${resp.status} response code for regId: $regId and txId: $transactionId")
+          logger.error(s"[getIncorporationUpdate] returned a ${resp.status} response code for regId: $regId and txId: $transactionId")
           throw new IncorporationInformationResponseException(s"Calling II on ${constructIncorporationInfoUri(transactionId, regime, subscriber)} returned a ${resp.status}")
       }
     }

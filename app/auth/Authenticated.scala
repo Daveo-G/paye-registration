@@ -17,7 +17,7 @@
 package auth
 
 import play.api.mvc.Result
-import play.api.Logger
+import utils.CustomLogger._
 import connectors.{AuthConnect, Authority}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,6 +31,7 @@ final case class LoggedIn(authContext: Authority) extends AuthenticationResult
 trait Authenticated {
 
   val auth: AuthConnect
+  implicit val className = getClass
 
   def authenticated(f: => AuthenticationResult => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
     for {
@@ -44,7 +45,7 @@ trait Authenticated {
   private def mapToAuthResult(authContext: Option[Authority]) : AuthenticationResult = {
     authContext match {
       case None =>
-        Logger.warn("[Authenticated] - [mapToAuthResult] : No user present; FORBIDDEN")
+        logger.warn("[Authenticated] - [mapToAuthResult] : No user present; FORBIDDEN")
         NotLoggedIn
       case Some(context) =>
         LoggedIn(context)

@@ -22,7 +22,6 @@ import audit.FailedDesSubmissionEvent
 import config.{MicroserviceAuditConnector, WSHttp}
 import models.incorporation.IncorpStatusUpdate
 import models.submission.{DESSubmission, TopUpDESSubmission}
-import play.api.Logger
 import play.api.libs.json.Writes
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -67,15 +66,17 @@ trait DESConnect extends HttpErrorFunctions {
 
   val auditConnector : AuditConnector
 
+  implicit val self = getClass
+
   private[connectors] def customDESRead(http: String, url: String, response: HttpResponse): HttpResponse = {
     response.status match {
       case 409 =>
-        Logger.warn("[DESConnect] - [customDESRead] Received 409 from DES - converting to 200")
+        logger.warn("[customDESRead] Received 409 from DES - converting to 200")
         HttpResponse(200, Some(response.json), response.allHeaders, Option(response.body))
       case 499 =>
         throw new Upstream4xxResponse(upstreamResponseMessage(http, url, response.status, response.body), 499, reportAs = 502, response.allHeaders)
       case status if is4xx(status) =>
-        if(status == 400) {Logger.error("PAYE_-_400_response_returned_from_DES")} //used in alerting - DO NOT CHANGE ERROR TEXT
+        if(status == 400) {logger.error("PAYE_-_400_response_returned_from_DES")} //used in alerting - DO NOT CHANGE ERROR TEXT
         throw new Upstream4xxResponse(upstreamResponseMessage(http, url, status, response.body), status, reportAs = 400, response.allHeaders)
       case _ => handleResponse(http, url)(response)
     }
@@ -92,9 +93,9 @@ trait DESConnect extends HttpErrorFunctions {
       case false => s"$desUrl/$desURI"
     }
 
-    Logger.info(s"[DESConnector] - [submitToDES]: Submission to DES for regId: $regId, ackRef ${submission.acknowledgementReference} and txId: ${incorpStatusUpdate.map(_.transactionId)}")
+    logger.info(s"[submitToDES]: Submission to DES for regId: $regId, ackRef ${submission.acknowledgementReference} and txId: ${incorpStatusUpdate.map(_.transactionId)}")
     payePOST[DESSubmission, HttpResponse](url, submission) map { resp =>
-      Logger.info(s"[DESConnector] - [submitToDES]: DES responded with ${resp.status} for regId: $regId and txId: ${incorpStatusUpdate.map(_.transactionId)}")
+      logger.info(s"[submitToDES]: DES responded with ${resp.status} for regId: $regId and txId: ${incorpStatusUpdate.map(_.transactionId)}")
       resp
     } recoverWith {
       case e: Upstream4xxResponse =>
@@ -110,9 +111,9 @@ trait DESConnect extends HttpErrorFunctions {
       case false => s"$desUrl/$desTopUpURI"
     }
 
-    Logger.info(s"[DESConnector] - [submitTopUpToDES]: Top Up to DES for regId: $regId, ackRef: ${submission.acknowledgementReference} and txId: $txId")
+    logger.info(s"[submitTopUpToDES]: Top Up to DES for regId: $regId, ackRef: ${submission.acknowledgementReference} and txId: $txId")
     payePOST[TopUpDESSubmission, HttpResponse](url, submission) map { resp =>
-      Logger.info(s"[DESConnector] - [submitTopUpToDES]: DES responded with ${resp.status} for regId: $regId and txId: $txId")
+      logger.info(s"[submitTopUpToDES]: DES responded with ${resp.status} for regId: $regId and txId: $txId")
       resp
     }
   }

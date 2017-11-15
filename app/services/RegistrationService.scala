@@ -23,7 +23,7 @@ import helpers.PAYEBaseValidator
 import models._
 import repositories.{RegistrationMongo, RegistrationMongoRepository, RegistrationRepository}
 import common.exceptions.RegistrationExceptions.{RegistrationFormatException, UnmatchedStatusException}
-import play.api.Logger
+import utils.CustomLogger._
 import play.api.libs.json.{JsObject, Json}
 import common.exceptions.DBExceptions.MissingRegDocument
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -48,11 +48,13 @@ trait RegistrationSrv extends PAYEBaseValidator {
   val payeCancelURL : String
   val auditService: AuditSrv
 
+  implicit val self = getClass
+
   def createNewPAYERegistration(regID: String, transactionID: String, internalId : String)(implicit ec:ExecutionContext): Future[PAYERegistration] = {
     registrationRepository.retrieveRegistration(regID) flatMap {
       case None => registrationRepository.createNewRegistration(regID, transactionID, internalId)
       case Some(registration) =>
-        Logger.info(s"Cannot create new registration for reg ID '$regID' as registration already exists")
+        logger.info(s"Cannot create new registration for reg ID '$regID' as registration already exists")
         Future.successful(registration)
     }
   }
@@ -132,7 +134,7 @@ trait RegistrationSrv extends PAYEBaseValidator {
         }
         registrationRepository.upsertCompletionCapacity(regID, capacity)
       case None =>
-        Logger.warn(s"Unable to update Completion Capacity for reg ID $regID, Error: Couldn't retrieve an existing registration with that ID")
+        logger.warn(s"Unable to update Completion Capacity for reg ID $regID, Error: Couldn't retrieve an existing registration with that ID")
         throw new MissingRegDocument(regID)
     }
   }
@@ -172,7 +174,7 @@ trait RegistrationSrv extends PAYEBaseValidator {
         Future.successful(json ++ ackRef ++ empRef ++ restartURL ++ cancelURL)
       }
       case None => {
-        Logger.warn(s"[RegistrationService] [getStatus] No PAYE registration document found for registration ID $regID")
+        logger.warn(s"[getStatus] No PAYE registration document found for registration ID $regID")
         throw new MissingRegDocument(regID)
       }
     }
@@ -183,7 +185,7 @@ trait RegistrationSrv extends PAYEBaseValidator {
       case Some(document) => document.status match {
         case documentStatus if validStatuses.contains(documentStatus) => registrationRepository.deleteRegistration(regID)
         case _ =>
-          Logger.warn(s"[RegistrationService] - [deletePAYERegistration] PAYE Reg document for regId $regID was not deleted as the document status was ${document.status}, not ${validStatuses.toString}")
+          logger.warn(s"[deletePAYERegistration] PAYE Reg document for regId $regID was not deleted as the document status was ${document.status}, not ${validStatuses.toString}")
           throw new UnmatchedStatusException
       }
       case None => throw new MissingRegDocument(regID)

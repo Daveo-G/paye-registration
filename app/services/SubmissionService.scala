@@ -27,7 +27,6 @@ import enums.{IncorporationStatus, PAYEStatus}
 import models._
 import models.incorporation.IncorpStatusUpdate
 import models.submission._
-import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContent, Request}
 import repositories._
@@ -75,6 +74,8 @@ trait SubmissionSrv extends ETMPStatusCodes {
 
   private val REGIME = "paye"
   private val SUBSCRIBER = "SCRS"
+
+  implicit val implementedClassName = getClass
 
   def submitToDes(regId: String)(implicit hc: HeaderCarrier, req: Request[AnyContent]): Future[String] = {
     for {
@@ -134,17 +135,17 @@ trait SubmissionSrv extends ETMPStatusCodes {
     registrationRepository.retrieveRegistration(regId) flatMap {
       case Some(payeReg) if payeReg.status == PAYEStatus.draft => incorpStatusUpdate match {
         case Some(statusUpdate) =>
-          Logger.info("[SubmissionService] - [buildPartialOrFullDesSubmission]: building a full DES submission")
+          logger.info("[SubmissionService] - [buildPartialOrFullDesSubmission]: building a full DES submission")
           payeReg2DESSubmission(payeReg, statusUpdate.crn, ctutr)
         case None =>
-          Logger.info("[SubmissionService] - [buildPartialOrFullDesSubmission]: building a partial DES submission")
+          logger.info("[SubmissionService] - [buildPartialOrFullDesSubmission]: building a partial DES submission")
           payeReg2DESSubmission(payeReg, None, ctutr)
       }
       case Some(payeReg) =>
-        Logger.warn(s"[SubmissionService] - [buildPartialDesSubmission]: The registration for regId $regId has incorrect status of ${payeReg.status.toString}s")
+        logger.warn(s"[SubmissionService] - [buildPartialDesSubmission]: The registration for regId $regId has incorrect status of ${payeReg.status.toString}s")
         throw new RegistrationInvalidStatus(regId, payeReg.status.toString)
       case None =>
-        Logger.warn(s"[SubmissionService] - [buildPartialDesSubmission]:  building des top submission failed, there was no registration document present for regId $regId")
+        logger.warn(s"[SubmissionService] - [buildPartialDesSubmission]:  building des top submission failed, there was no registration document present for regId $regId")
         throw new MissingRegDocument(regId)
     }
   }
@@ -153,13 +154,13 @@ trait SubmissionSrv extends ETMPStatusCodes {
     registrationRepository.retrieveRegistration(regId) map {
       case Some(payeReg) if payeReg.status == PAYEStatus.held => payeReg2TopUpDESSubmission(payeReg, incorpStatusUpdate)
       case Some(payeReg) if List(PAYEStatus.draft, PAYEStatus.invalid).contains(payeReg.status) =>
-        Logger.warn(s"[SubmissionService] - [buildTopUpDESSubmission]: paye status is currently ${payeReg.status} for registrationId $regId")
+        logger.warn(s"[SubmissionService] - [buildTopUpDESSubmission]: paye status is currently ${payeReg.status} for registrationId $regId")
         throw new RegistrationInvalidStatus(regId, payeReg.status.toString)
       case Some(payeReg) =>
-        Logger.error(s"[SubmissionService] - [buildTopUpDESSubmission]: paye status is currently ${payeReg.status} for registrationId $regId")
+        logger.error(s"[SubmissionService] - [buildTopUpDESSubmission]: paye status is currently ${payeReg.status} for registrationId $regId")
         throw new ErrorRegistrationException(regId, payeReg.status.toString)
       case None =>
-        Logger.error(s"[SubmissionService] - [buildTopUpDESSubmission]: building des top submission failed, there was no registration document present for regId $regId")
+        logger.error(s"[SubmissionService] - [buildTopUpDESSubmission]: building des top submission failed, there was no registration document present for regId $regId")
         throw new MissingRegDocument(regId)
     }
   }
@@ -177,7 +178,7 @@ trait SubmissionSrv extends ETMPStatusCodes {
     }
 
     val ackRef = payeReg.acknowledgementReference.getOrElse {
-      Logger.warn(s"[SubmissionService] - [payeReg2PartialDESSubmission]: Unable to convert to Partial DES Submission model for reg ID ${payeReg.registrationID}, Error: Missing Acknowledgement Ref")
+      logger.warn(s"[SubmissionService] - [payeReg2PartialDESSubmission]: Unable to convert to Partial DES Submission model for reg ID ${payeReg.registrationID}, Error: Missing Acknowledgement Ref")
       throw new AcknowledgementReferenceNotExistsException(payeReg.registrationID)
     }
 
@@ -196,7 +197,7 @@ trait SubmissionSrv extends ETMPStatusCodes {
   private[services] def payeReg2TopUpDESSubmission(payeReg: PAYERegistration, incorpStatusUpdate: IncorpStatusUpdate)(implicit ec:ExecutionContext): TopUpDESSubmission = {
     TopUpDESSubmission(
       acknowledgementReference = payeReg.acknowledgementReference.getOrElse {
-        Logger.warn(s"[SubmissionService] - [payeReg2TopUpDESSubmission]: Unable to convert to Top Up DES Submission model for reg ID ${payeReg.registrationID}, Error: Missing Acknowledgement Ref")
+        logger.warn(s"[SubmissionService] - [payeReg2TopUpDESSubmission]: Unable to convert to Top Up DES Submission model for reg ID ${payeReg.registrationID}, Error: Missing Acknowledgement Ref")
         throw new AcknowledgementReferenceNotExistsException(payeReg.registrationID)
       },
       status = incorpStatusUpdate.status,
